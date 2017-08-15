@@ -80,12 +80,25 @@ app.get('/', function (req, res) {
 });
 
 
+cnt = 0;
+app.get('/counter', function(req, res){
+	cnt = cnt + 1;
+	res.send(cnt.toString());
+});
+
 app.get('/ui/style.css', function (req, res) {
 	res.sendFile(path.join(__dirname, 'ui', 'style.css'));
 });
 
 app.get('/ui/madi.png', function (req, res) {
 	res.sendFile(path.join(__dirname, 'ui', 'madi.png'));
+});
+
+var names =[];
+app.get('/submit-name', function(req, res){
+	var name = req.query.name;
+	names.push(name);
+	res.send(JSON.stringify(names));
 });
 
 app.get('/:articleName', function(req, res){
