@@ -5,6 +5,72 @@ var path = require('path');
 var app = express();
 app.use(morgan('combined'));
 
+
+var articles = {
+'article-one' : {
+	title : "Article One | Harsh",
+	heading : "Article 1",
+	content : 
+	`<p>
+		Welcome to article one. 
+		What goes Baaaaa?
+	</p>` 
+},
+
+'article-two' : {
+	title : "Article Two | Harsh",
+	heading : "Article 2",
+	content : 
+	`<p>
+		Welcome to article two.
+		Not mice. But...
+	</p>` 
+},
+
+'article-three' : {
+	title : "Article Three | Harsh",
+	heading : "Article 3",
+	content : 
+	`<p>
+		Welcome to article three.
+		COWS!
+	</p>` 
+}
+};
+
+function createTemplate (data){
+	var title = data.title;
+	var heading = data.heading;
+	var content = data.content;
+
+	var template = `
+		<!doctype html>
+	<html>
+		<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			<title>${title}</title>
+		
+		<link href="/ui/style.css" rel="stylesheet" />
+		</head>
+
+		<body>
+			<div class="container">
+				<div>
+					<a href="/">Home</a>
+				</div>
+				<hr>
+
+				<h3>${heading}</h3>
+				<div>
+					${content}
+				</div>
+			</div>
+		</body>
+	</html>`;
+	return(template);
+}
+
+
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'ui', 'index.html'));
 });
@@ -17,16 +83,9 @@ app.get('/ui/madi.png', function (req, res) {
   res.sendFile(path.join(__dirname, 'ui', 'madi.png'));
 });
 
-app.get('/article-one', function(req, res){
-  res.sendFile(path.join(__dirname, 'ui', 'article-one.html'));
-});
-
-app.get('/article-two', function(req, res){
-  res.sendFile(path.join(__dirname, 'ui', 'article-two.html'));
-});
-
-app.get('/article-three', function(req, res){
-  res.sendFile(path.join(__dirname, 'ui', 'article-three.html'));
+app.get('/:articleName', function(req, res){
+	var articleName = req.params.articleName
+  res.send(createTemplate(articles[articleName]));
 });
 
 // Do not change port, otherwise your app won't run on IMAD servers
