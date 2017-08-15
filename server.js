@@ -7,35 +7,35 @@ app.use(morgan('combined'));
 
 
 var articles = {
-'article-one' : {
-	title : "Article One | Harsh",
-	heading : "Article 1",
-	content : 
-	`<p>
-		Welcome to article one. 
-		What goes Baaaaa?
-	</p>` 
-},
+	'article-one' : {
+		title : "Article One | Harsh",
+		heading : "Article 1",
+		content : 
+		`<p>
+			Welcome to article one. 
+			What goes Baaaaa?
+		</p>` 
+	},
 
-'article-two' : {
-	title : "Article Two | Harsh",
-	heading : "Article 2",
-	content : 
-	`<p>
-		Welcome to article two.
-		Not mice. But...
-	</p>` 
-},
+	'article-two' : {
+		title : "Article Two | Harsh",
+		heading : "Article 2",
+		content : 
+		`<p>
+			Welcome to article two.
+			Not mice. But...
+		</p>` 
+	},
 
-'article-three' : {
-	title : "Article Three | Harsh",
-	heading : "Article 3",
-	content : 
-	`<p>
-		Welcome to article three.
-		COWS!
-	</p>` 
-}
+	'article-three' : {
+		title : "Article Three | Harsh",
+		heading : "Article 3",
+		content : 
+		`<p>
+			Welcome to article three.
+			COWS!
+		</p>` 
+	}
 };
 
 function createTemplate (data){
@@ -71,21 +71,26 @@ function createTemplate (data){
 }
 
 
-app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'ui', 'index.html'));
+app.get('/ui/main.js', function (req, res) {
+	res.sendFile(path.join(__dirname, 'ui', 'main.js'));
 });
 
+app.get('/', function (req, res) {
+	res.sendFile(path.join(__dirname, 'ui', 'index.html'));
+});
+
+
 app.get('/ui/style.css', function (req, res) {
-  res.sendFile(path.join(__dirname, 'ui', 'style.css'));
+	res.sendFile(path.join(__dirname, 'ui', 'style.css'));
 });
 
 app.get('/ui/madi.png', function (req, res) {
-  res.sendFile(path.join(__dirname, 'ui', 'madi.png'));
+	res.sendFile(path.join(__dirname, 'ui', 'madi.png'));
 });
 
 app.get('/:articleName', function(req, res){
 	var articleName = req.params.articleName
-  res.send(createTemplate(articles[articleName]));
+	res.send(createTemplate(articles[articleName]));
 });
 
 // Do not change port, otherwise your app won't run on IMAD servers
@@ -93,5 +98,5 @@ app.get('/:articleName', function(req, res){
 
 var port = 80;
 app.listen(port, function () {
-  console.log(`IMAD course app listening on port ${port}!`);
+	console.log(`IMAD course app listening on port ${port}!`);
 });
