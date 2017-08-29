@@ -39,18 +39,30 @@ button.onclick = function() {
 
 
 //To show list of names
-var name = document.getElementById('name').value;
 var submitBtn = document.getElementById('submit_btn');
 
 submitBtn.onclick = function() {
+	var name = document.getElementById('name').value;
+	var req = new XMLHttpRequest();
 
-	var list=``;
-	var names = ['name1', 'name2', 'name3']
-	for (var i=0; i<names.length; i++)
+	req.onreadystatechange = function() {
+		if(req.readyState === XMLHttpRequest.DONE)
 		{
-			list =  list + '<li>' + names[i] + '</li>';
-		}
+			if(req.status === 200)
+			{
+					var list=``;
+					var names = JSON.parse(req.responseText);
+					for (var i=0; i<names.length; i++)
+						{
+							list =  list + '<li>' + names[i] + '</li>';
+						}
 
-	ul = document.getElementById('nameList');
-	ul.innerHTML = list;
+					ul = document.getElementById('nameList');
+					ul.innerHTML = list;
+			}
+		}
+	};
+
+	req.open('GET', 'http://localhost:80/submit-name?name=' + name, true);
+	req.send(null);
 };
