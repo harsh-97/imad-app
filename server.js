@@ -14,40 +14,7 @@ var config = {
 	password: 'seth.1'
 };
 
-
 var pool = new Pool(config);
-
-var articles = {
-	'article-one' : {
-		title : "Article One | Harsh",
-		heading : "Article 1",
-		content : 
-		`<p>
-			Welcome to article one. 
-			What goes Baaaaa?
-		</p>` 
-	},
-
-	'article-two' : {
-		title : "Article Two | Harsh",
-		heading : "Article 2",
-		content : 
-		`<p>
-			Welcome to article two.
-			Not mice. But...
-		</p>` 
-	},
-
-	'article-three' : {
-		title : "Article Three | Harsh",
-		heading : "Article 3",
-		content : 
-		`<p>
-			Welcome to article three.
-			COWS!
-		</p>` 
-	}
-};
 
 function createTemplate (data){
 	var title = data.title;
@@ -94,7 +61,6 @@ app.get('/ui/madi.png', function (req, res) {
 	res.sendFile(path.join(__dirname, 'ui', 'madi.png'));
 });
 
-
 app.get('/', function (req, res) {
 	res.sendFile(path.join(__dirname, 'ui', 'index.html'));
 });
@@ -127,7 +93,7 @@ app.get('/test-db', function(req, res){
 
 app.get('/articles/:articleName', function(req, res){
 	var articleName = req.params.articleName
-	pool.query("select * from articles where articlename ='" + articleName + "'", function(err, result){
+	pool.query("select * from articles where articlename = $1",  [articleName], function(err, result){
 		if(err)
 		{
 			res.status(500).send(err.toString());
