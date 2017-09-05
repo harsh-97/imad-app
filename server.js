@@ -2,19 +2,22 @@ var express = require('express');
 var morgan = require('morgan');
 var path = require('path');
 var Pool = require('pg').Pool
+var crypto = require('crypto');
+var bodyParser = require('body-parser');
 var app = express();
 
-app.use(morgan('combined'));
 
 var config = {
 	user: 'postgres',
 	database: 'postgres',
 	host: 'localhost',
 	port: '5432',
-	password: 'seth.1'
+	password: '0000'
 };
-
 var pool = new Pool(config);
+
+app.use(morgan('combined'));
+app.use(bodyParser.json());
 
 function createTemplate (data){
 	var title = data.title;
@@ -108,6 +111,35 @@ app.get('/articles/:articleName', function(req, res){
 			{
 				res.send(createTemplate(result.rows[0]));
 			}
+		}
+	});
+});
+
+function hash(input, salt)
+{
+	var hashed = crypto.pbkdf2Sync(input, salt, 10000, 512, 'sha512');
+	return ['pbkdf2', 10000, salt, hashed.toString('hex')].join('$');
+}
+
+app.get('/hash/:input', function(req, res){
+	var hashedString = hash(req.params.input, 'nakku-is-my-gf');
+	res.send(hashedString);
+});
+
+app.post('/create-user', function(req, res){
+	username = req.body.username;
+	password = req.body.password;
+
+	salt = crypto.randomBytes(128).toString('hex');
+	hashed = hash(password, salt);
+	pool.query('insert into "user" (username, password) values ($1, $2)', [username, hashed], function(err, result){
+		if(err)
+		{
+			res.status(500).send(err.toString())
+		}
+		else
+		{
+			res.send("User successfully created: " + username);
 		}
 	});
 });
