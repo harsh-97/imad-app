@@ -14,6 +14,7 @@ var config = {
 	password: 'seth.1'
 };
 
+
 var pool = new Pool(config);
 
 var articles = {
