@@ -15,7 +15,6 @@ img.onclick = function(){
 	var interval = setInterval(moveRight, 10);
 };
 
-
 //To increment counter
 var button = document.getElementById('counter');
 button.onclick = function() {
@@ -33,7 +32,7 @@ button.onclick = function() {
 		}
 	};
 
-	req.open('GET', 'http://localhost:80/counter', true);
+	req.open('GET', 'http://localhost:2345/counter', true);
 	req.send(null);
 };
 
@@ -63,6 +62,6 @@ submitBtn.onclick = function() {
 		}
 	};
 
-	req.open('GET', 'http://localhost:80/submit-name?name=' + name, true);
+	req.open('GET', 'http://localhost:2345/submit-name?name=' + name, true);
 	req.send(null);
 };

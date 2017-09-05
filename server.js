@@ -5,7 +5,6 @@ var Pool = require('pg').Pool
 var app = express();
 
 app.use(morgan('combined'));
-var  pool = new Pool(config);
 
 var config = {
 	user: 'postgres',
@@ -14,6 +13,8 @@ var config = {
 	port: '5432',
 	password: 'seth.1'
 };
+
+var pool = new Pool(config);
 
 var articles = {
 	'article-one' : {
@@ -92,10 +93,10 @@ app.get('/ui/madi.png', function (req, res) {
 	res.sendFile(path.join(__dirname, 'ui', 'madi.png'));
 });
 
+
 app.get('/', function (req, res) {
 	res.sendFile(path.join(__dirname, 'ui', 'index.html'));
 });
-
 
 cnt = 0;
 app.get('/counter', function(req, res){
@@ -123,9 +124,9 @@ app.get('/test-db', function(req, res){
 	});
 });
 
-app.get('articles/:articleName', function(req, res){
+app.get('/articles/:articleName', function(req, res){
 	var articleName = req.params.articleName
-	pool.query("select * from articles where title ='" + articleName + "'", function(err, result){
+	pool.query("select * from articles where articlename ='" + articleName + "'", function(err, result){
 		if(err)
 		{
 			res.status(500).send(err.toString());
@@ -143,7 +144,6 @@ app.get('articles/:articleName', function(req, res){
 		}
 	});
 });
-
 
 // Do not change port, otherwise your app won't run on IMAD servers
 // Use 8080 only for local development if you already have apache running on 80
