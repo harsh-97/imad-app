@@ -132,14 +132,68 @@ app.post('/create-user', function(req, res){
 
 	salt = crypto.randomBytes(128).toString('hex');
 	hashed = hash(password, salt);
-	pool.query('insert into "user" (username, password) values ($1, $2)', [username, hashed], function(err, result){
+
+	pool.query('select * from "user" where username = $1', [username], function(err, result){
 		if(err)
 		{
-			res.status(500).send(err.toString())
+			res.status(500).send(err.toString());
 		}
 		else
 		{
-			res.send("User successfully created: " + username);
+			if(result.rows.length === 0)
+			{
+				pool.query('insert into "user" (username, password) values ($1, $2)', [username, hashed], function(err, result){
+					if(err)
+					{
+						res.status(500).send(err.toString());
+					}
+					else
+					{
+						res.send("User successfully created: " + username);
+					}
+				});
+			}	
+			else
+			{
+				res.status(403).send("User already exists!");
+			}
+		}
+	});
+});
+
+app.post('/login', function(req, res){
+	username = req.body.username;
+	password = req.body.password;
+
+	pool.query('select * from "user" where username = $1', [username], function(err, result) {
+		if(err)
+		{
+			res.status(500).send(err.toString());
+		}
+		else
+		{
+			if(result.rows.length === 0)
+			{
+				res.status(403).send("Invalid Login Credentials!");
+			}
+			else
+			{
+				var pwd = result.rows[0].password;
+				var salt = pwd.split('$')[2];
+				var hashed = hash(password, salt);
+				console.log("****");
+				console.log(pwd);
+				console.log("****");
+				console.log(hashed);
+				if (hashed === pwd)
+				{
+					res.send("Logged In!");
+				}
+				else
+				{
+					res.status(403).send("Invalid Login Credentials!");
+				}
+			}
 		}
 	});
 });
