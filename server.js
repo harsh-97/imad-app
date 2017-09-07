@@ -4,8 +4,15 @@ var path = require('path');
 var Pool = require('pg').Pool
 var crypto = require('crypto');
 var bodyParser = require('body-parser');
-var app = express();
+var session = require('express-session');
 
+var app = express();
+app.use(morgan('combined'));
+app.use(bodyParser.json());
+app.use(session({
+	secret: "nakku-is-my-gf",
+	cookie: { maxage: 1000 * 60 * 60 * 24 * 30 }
+}));
 
 var config = {
 	user: 'postgres',
@@ -15,9 +22,6 @@ var config = {
 	password: '0000'
 };
 var pool = new Pool(config);
-
-app.use(morgan('combined'));
-app.use(bodyParser.json());
 
 function createTemplate (data){
 	var title = data.title;
@@ -187,6 +191,8 @@ app.post('/login', function(req, res){
 				console.log(hashed);
 				if (hashed === pwd)
 				{
+					req.session.auth = {userId: result.rows[0].id};
+
 					res.send("Logged In!");
 				}
 				else
@@ -196,6 +202,22 @@ app.post('/login', function(req, res){
 			}
 		}
 	});
+});
+
+app.get('/check-login', function(req, res){
+	if(req.session && req.session.auth && req.session.auth.userId)
+	{
+		res.send("You are logged in: " + req.session.auth.userId.toString());
+	}
+	else
+	{
+		res.send("Not logged in!");
+	}
+});
+
+app.get('/logout', function(req, res){
+	delete req.session.auth;
+	res.send("You have been logged out!");
 });
 
 // Do not change port, otherwise your app won't run on IMAD servers
