@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">imadApp</string>
+    <string name="hello_world_text">Hello World!</string>
+    <string name="hello_world_button">Press Me to Replace Text!</string>
+    <string name="hello_world_replacement_hint">Enter Replacement Text</string>
+
 </resources>
